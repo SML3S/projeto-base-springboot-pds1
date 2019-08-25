@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Profile;
 
 import com.projetobase.entities.Category;
 import com.projetobase.entities.Order;
+import com.projetobase.entities.OrderItem;
 import com.projetobase.entities.Product;
 import com.projetobase.entities.User;
 import com.projetobase.entities.enums.OrderStatus;
 import com.projetobase.repositories.CategoryRepository;
+import com.projetobase.repositories.OrderItemRepository;
 import com.projetobase.repositories.OrderRepository;
 import com.projetobase.repositories.ProductRepository;
 import com.projetobase.repositories.UserRepository;
@@ -33,6 +35,9 @@ public class TestConfg implements CommandLineRunner {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private OrderItemRepository orderItemRepository; 
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -70,6 +75,13 @@ public class TestConfg implements CommandLineRunner {
 		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.WAITING_PAYMENT, u1);
 		
 		orderRepository.saveAll(Arrays.asList(o1, o2, o3));
+		
+		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p3, 1, p4.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p3, 2, p1.getPrice());
+		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
+		
+		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
 	}
 	
 	
