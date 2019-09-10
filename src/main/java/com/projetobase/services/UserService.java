@@ -13,19 +13,23 @@ import com.projetobase.repositories.UserRepository;
 public class UserService {
 
 	@Autowired
-	private UserRepository repositoty;
-	
-	public List<User> findAll(){
-		
-		return repositoty.findAll();
+	private UserRepository repository;
+
+	public List<User> findAll() {
+
+		return repository.findAll();
 	}
-	
+
 	public User findById(Long id) {
-		Optional<User> obj = repositoty.findById(id);
+		Optional<User> obj = repository.findById(id);
 		return obj.get();
 	}
-	
+
 	public User insert(User obj) {
-		return repositoty.save(obj);
+		return repository.save(obj);
+	}
+
+	public void delete(Long id) {
+		repository.deleteById(id);
 	}
 }
