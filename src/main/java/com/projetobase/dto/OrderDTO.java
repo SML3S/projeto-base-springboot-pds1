@@ -3,6 +3,7 @@ package com.projetobase.dto;
 import java.io.Serializable;
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.projetobase.entities.Order;
 import com.projetobase.entities.User;
 import com.projetobase.entities.enums.OrderStatus;
@@ -12,6 +13,8 @@ public class OrderDTO implements Serializable{
 	
 	
 	private Long id;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
 	private OrderStatus orderStatus;
 	private Long clientId;
