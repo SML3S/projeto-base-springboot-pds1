@@ -2,26 +2,32 @@ package com.projetobase.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projetobase.dto.OrderDTO;
 import com.projetobase.entities.Order;
 import com.projetobase.repositories.OrderRepository;
+import com.projetobase.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class OrderService {
 
 	@Autowired
-	private OrderRepository repositoty;
+	private OrderRepository repository;
 	
-	public List<Order> findAll(){
-		
-		return repositoty.findAll();
+	public List<OrderDTO> findAll() {
+
+		List<Order>list = repository.findAll();
+		return list.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
 	}
-	
-	public Order findById(Long id) {
-		Optional<Order> obj = repositoty.findById(id);
-		return obj.get();
+
+	public OrderDTO findById(Long id) {
+		Optional<Order> obj = repository.findById(id);
+		Order entity= obj.orElseThrow(()-> new ResourceNotFoundException(id));
+		return new OrderDTO(entity);
 	}
+
 }
