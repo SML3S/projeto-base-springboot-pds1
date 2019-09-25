@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import com.projetobase.entities.Category;
 import com.projetobase.entities.Product;
 import com.projetobase.repositories.CategoryRepository;
 import com.projetobase.repositories.ProductRepository;
+import com.projetobase.services.exceptions.DatabaseException;
 import com.projetobase.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -59,6 +62,16 @@ public class ProductService {
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
+	}
+	
+	public void delete(Long id) {
+		try {
+		repository.deleteById(id);
+		}catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(id);
+		}catch (DataIntegrityViolationException e){
+			throw new DatabaseException(e.getMessage());
+			}
 	}
 
 	private void setProductCategories(Product entity, List<CategoryDTO> categories) {
