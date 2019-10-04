@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projetobase.dto.CategoryDTO;
-import com.projetobase.entities.Category;
 import com.projetobase.services.CategoryService;
 
 @RestController
@@ -36,8 +35,7 @@ public class CategoryResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoryDTO> findById(@PathVariable Long id){
 	
-		CategoryDTO dto = service.findById(id);
-		
+		CategoryDTO dto = service.findById(id);		
 		return ResponseEntity.ok().body(dto) ;
 	}
 	
