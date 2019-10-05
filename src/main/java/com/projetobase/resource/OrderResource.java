@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetobase.dto.OrderDTO;
-import com.projetobase.entities.Order;
 import com.projetobase.services.OrderService;
 
 @RestController
