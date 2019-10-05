@@ -13,12 +13,14 @@ import com.projetobase.entities.Order;
 import com.projetobase.entities.OrderItem;
 import com.projetobase.entities.Payment;
 import com.projetobase.entities.Product;
+import com.projetobase.entities.Role;
 import com.projetobase.entities.User;
 import com.projetobase.entities.enums.OrderStatus;
 import com.projetobase.repositories.CategoryRepository;
 import com.projetobase.repositories.OrderItemRepository;
 import com.projetobase.repositories.OrderRepository;
 import com.projetobase.repositories.ProductRepository;
+import com.projetobase.repositories.RoleRepository;
 import com.projetobase.repositories.UserRepository;
 
 @Configuration
@@ -39,6 +41,9 @@ public class TestConfg implements CommandLineRunner {
 	
 	@Autowired
 	private OrderItemRepository orderItemRepository; 
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -68,6 +73,17 @@ public class TestConfg implements CommandLineRunner {
 		
 		User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
 		User u2 = new User(null, "Alex Green", "alex@gmail.com", "977777777", "123456");
+		
+		userRepository.saveAll(Arrays.asList(u1,u2));
+		
+		Role r1 = new Role(null, "ROLE_CLIENT");
+		Role r2 = new Role(null, "ROLE_ADMIN");
+		
+		roleRepository.saveAll(Arrays.asList(r1,r2));
+		
+		u1.getRoles().add(r1);
+		u2.getRoles().add(r1);
+		u2.getRoles().add(r2);
 		
 		userRepository.saveAll(Arrays.asList(u1,u2));
 		
