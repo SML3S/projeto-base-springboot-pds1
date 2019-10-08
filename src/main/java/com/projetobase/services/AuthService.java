@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.projetobase.dto.CredentialsDTO;
 import com.projetobase.dto.TokenDTO;
+import com.projetobase.entities.Order;
 import com.projetobase.entities.User;
 import com.projetobase.repositories.UserRepository;
 import com.projetobase.security.JWTUtil;
@@ -54,6 +55,13 @@ public class AuthService {
 	public void validateSelfOrAdmin(Long userId) {
 		User user = authenticated();
 		if(user == null || (!user.getId().equals(userId)) && !user.hasRole("ROLE_ADIMIN")) {
+			throw new JWTAuthorizationException("Access denied");
+		}
+	}
+	
+	public void validateOwnOrderOrAdmin(Order order) {
+		User user = authenticated();
+		if(user == null || (!user.getId().equals(order.getClient().getId())) && !user.hasRole("ROLE_ADIMIN")) {
 			throw new JWTAuthorizationException("Access denied");
 		}
 	}
