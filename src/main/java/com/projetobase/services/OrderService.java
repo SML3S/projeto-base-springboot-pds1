@@ -15,6 +15,7 @@ import com.projetobase.entities.Order;
 import com.projetobase.entities.OrderItem;
 import com.projetobase.entities.User;
 import com.projetobase.repositories.OrderRepository;
+import com.projetobase.repositories.UserRepository;
 import com.projetobase.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -22,6 +23,9 @@ public class OrderService {
 
 	@Autowired
 	private OrderRepository repository;
+	
+	@Autowired
+	private UserRepository userRepository; 
 	
 	@Autowired
 	private AuthService authService;
@@ -51,5 +55,12 @@ public class OrderService {
 		authService.validateOwnOrderOrAdmin(order);
 		Set<OrderItem> set = order.getItem();
 		return set.stream().map(e -> new OrderItemDTO(e)).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<OrderDTO> findByClientId(Long clientId) {
+		User client = userRepository.getOne(clientId);
+		List<Order> list = repository.findByClient(client);
+		return list.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
 	}
 }
