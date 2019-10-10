@@ -1,7 +1,9 @@
 package com.projetobase.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import com.projetobase.entities.Product;
 import com.projetobase.repositories.CategoryRepository;
 import com.projetobase.repositories.ProductRepository;
 import com.projetobase.services.exceptions.DatabaseException;
+import com.projetobase.services.exceptions.ParamFormatException;
 import com.projetobase.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -33,12 +35,35 @@ public class ProductService {
 	@Autowired
 	private CategoryRepository  categoryRepository;
 	
-	public Page<ProductDTO> findAllPaged(Pageable pageable){
+	public Page<ProductDTO> findByNameCategoryPaged(String name, String categoriesStr, Pageable pageable){
+		Page<Product> list;
+		if(categoriesStr.endsWith("")) {
+			list = repository.findByNameContainingIgnoreCase(name, pageable);
+			
+		}
+		else {
+		List<Long> ids= parseIds(categoriesStr);
+		List<Category> categories = ids.stream().map(id -> categoryRepository.getOne(id)).collect(Collectors.toList());
+		list = repository.findByNameContainingIgnoreCaseAndCategoriesIn(name, categories, pageable);
 		
-		Page<Product> list = repository.findAll(pageable);
+		}
 		return list.map(e -> new ProductDTO(e));
 	}
 	
+	private List<Long> parseIds(String categoriesStr) {
+		String[] idsArray = categoriesStr.split(",");
+		List<Long> list = new ArrayList<>();
+		for (String idStr : idsArray) {
+			try {
+			list.add(Long.parseLong(idStr));
+			}catch (NumberFormatException e) {
+				throw new ParamFormatException("Invalid categories format");
+			}
+			
+		}
+		return list;
+	}
+
 	public ProductDTO findById(Long id) {
 		Optional<Product> obj = repository.findById(id);
 		Product entity= obj.orElseThrow(()-> new ResourceNotFoundException(id));
