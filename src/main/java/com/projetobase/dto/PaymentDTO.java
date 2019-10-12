@@ -38,11 +38,11 @@ public class PaymentDTO implements Serializable {
 		this.id = id;
 	}
 
-	public Instant getmoment() {
+	public Instant getMoment() {
 		return moment;
 	}
 
-	public void setmoment(Instant moment) {
+	public void setMoment(Instant moment) {
 		this.moment = moment;
 	}
 

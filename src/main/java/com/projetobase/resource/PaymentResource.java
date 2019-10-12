@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projetobase.dto.PaymentDTO;
+import com.projetobase.dto.PaymentDTO;
 import com.projetobase.services.PaymentService;
 
 @RestController
@@ -42,4 +43,20 @@ public class PaymentResource {
 		return ResponseEntity.ok().body(dto) ;
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PostMapping
+	public ResponseEntity<PaymentDTO> insert(@RequestBody PaymentDTO dto){
+		PaymentDTO newdto = service.insert(dto);
+		URI uri= ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newdto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newdto) ;
+	}
+	
+		
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<PaymentDTO> update(@PathVariable Long id, @RequestBody PaymentDTO dto){
+		dto = service.update(id, dto);
+		return ResponseEntity.ok().body(dto);
+	}
 }
